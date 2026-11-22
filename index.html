@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Santiarot · Intérprete de los 22 Arcanos Mayores &amp; Poesía</title>
+    <meta
+      name="description"
+      content="Aplicación serena y literaria para interpretar los 22 Arcanos Mayores del tarot en tiradas de 1, 2 o 3 cartas, pensada para acompañar el mazo Santos Locos | Tarot & Poesía."
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='10' fill='%23faf7f2'/%3E%3Ccircle cx='18' cy='18' r='11' fill='none' stroke='%2325201d' stroke-width='1.5'/%3E%3Ccircle cx='18' cy='18' r='4' fill='none' stroke='%23ba4e31' stroke-width='1.5'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="paper-grain" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="#interpretar" class="brand" id="brand-home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36" width="32" height="32">
+              <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="18" cy="18" r="4.5" fill="none" stroke="var(--accent-terracotta)" stroke-width="1.4" />
+              <path d="M18 2v5M18 29v5M2 18h5M29 18h5" stroke="var(--accent-ochre)" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-title">Santiarot</span>
+            <span class="brand-subtitle">22 Arcanos Mayores · Tarot &amp; Poesía</span>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Secciones principales">
+          <button
+            type="button"
+            class="nav-tab is-active"
+            id="tab-interpretar"
+            data-view="interpretar"
+            aria-pressed="true"
+          >
+            Interpretar
+          </button>
+          <button
+            type="button"
+            class="nav-tab"
+            id="tab-arcanos"
+            data-view="arcanos"
+            aria-pressed="false"
+          >
+            Los 22 Arcanos
+          </button>
+          <button
+            type="button"
+            class="nav-tab"
+            id="tab-bitacora"
+            data-view="bitacora"
+            aria-pressed="false"
+          >
+            Bitácora
+            <span class="nav-count is-hidden" id="bitacora-count">0</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-container">
+      <!-- VISTA 1: INTERPRETAR -->
+      <section id="view-interpretar" class="view-section is-active" aria-labelledby="hero-heading">
+        <div class="hero-intro">
+          <h1 id="hero-heading">Una guía serena para interpretar tus 22 arcanos</h1>
+          <p class="hero-lead">
+            Pensado para leer tu mazo físico de <strong>Santos Locos · Tarot &amp; Poesía</strong> o sacar cartas aquí, ya sea para ti o para acompañar a alguien más.
+          </p>
+        </div>
+
+        <!-- PASO 1: CONFIGURACIÓN BREVE -->
+        <section class="panel setup-panel" aria-label="Preparar lectura">
+          <div class="setup-grid">
+            <div class="setup-block">
+              <span class="field-label" id="label-destinatario">1. ¿Para quién es la lectura?</span>
+              <div class="segmented-control" role="group" aria-labelledby="label-destinatario">
+                <button
+                  type="button"
+                  class="segment-btn is-active"
+                  id="mode-yo"
+                  data-mode="yo"
+                  aria-pressed="true"
+                >
+                  Para mí
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  id="mode-otro"
+                  data-mode="otro"
+                  aria-pressed="false"
+                >
+                  Para otra persona
+                </button>
+              </div>
+
+              <div class="recipient-wrap is-hidden" id="recipient-wrap">
+                <label class="input-label" for="recipient-name">Nombre de quien consulta (opcional)</label>
+                <input
+                  type="text"
+                  id="recipient-name"
+                  class="text-input"
+                  maxlength="40"
+                  placeholder="Ej. Sofía, Lucas..."
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="setup-block setup-spreads">
+              <span class="field-label" id="label-tirada">2. Elige cuántas cartas interpretar</span>
+              <div class="spread-options" id="spread-options" role="radiogroup" aria-labelledby="label-tirada">
+                <!-- Se renderizan las 3 opciones desde JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="question-block">
+            <label class="field-label" for="reading-question">3. Intención o pregunta (opcional)</label>
+            <input
+              type="text"
+              id="reading-question"
+              class="text-input"
+              maxlength="160"
+              placeholder="Ej. ¿Qué actitud me conviene tomar frente a este cambio?"
+              autocomplete="off"
+            />
+            <div class="question-chips" aria-label="Sugerencias de preguntas">
+              <button type="button" class="chip-btn" data-question="¿Qué necesito ver o entender hoy?">
+                ¿Qué necesito ver hoy?
+              </button>
+              <button type="button" class="chip-btn" data-question="¿Qué actitud me conviene ante esta situación?">
+                ¿Qué actitud me conviene?
+              </button>
+              <button type="button" class="chip-btn" data-question="¿Qué me está frenando y qué me ayuda a avanzar?">
+                ¿Qué frena y qué ayuda?
+              </button>
+              <button type="button" class="chip-btn" data-question="¿Qué parte de este tema merece más cuidado?">
+                ¿Qué merece cuidado?
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- PASO 2: MESA DE CARTAS -->
+        <section class="panel table-panel" aria-label="Selección o tirada de cartas">
+          <div class="table-header">
+            <div>
+              <h2 class="section-title">Tus cartas</h2>
+              <p class="section-subtitle" id="table-instruction">
+                Elige en tu mazo físico y toca aquí los arcanos que salieron en cada lugar.
+              </p>
+            </div>
+
+            <div class="source-switch" role="group" aria-label="Cómo elegir las cartas">
+              <button
+                type="button"
+                class="source-btn is-active"
+                id="source-fisico"
+                data-source="fisico"
+                aria-pressed="true"
+              >
+                Elegí de mi mazo físico
+              </button>
+              <button
+                type="button"
+                class="source-btn"
+                id="source-azar"
+                data-source="azar"
+                aria-pressed="false"
+              >
+                Sacar al azar aquí
+              </button>
+            </div>
+          </div>
+
+          <!-- Controles para modo Sacar al Azar -->
+          <div class="random-controls is-hidden" id="random-controls">
+            <button type="button" class="btn-primary" id="btn-draw-random">
+              Barajar y sacar cartas
+            </button>
+            <button type="button" class="btn-secondary is-hidden" id="btn-reveal-all">
+              Voltear todas
+            </button>
+            <span class="random-hint" id="random-hint">
+              Se mezclarán los 22 Arcanos Mayores y podrás voltear cada carta al tocarla.
+            </span>
+          </div>
+
+          <!-- Ranuras de cartas sobre paño editorial -->
+          <div class="reading-cloth" id="reading-cloth">
+            <div class="slots-container" id="slots-container" data-count="3">
+              <!-- Ranuras generadas por JS -->
+            </div>
+            <div class="cloth-actions">
+              <button type="button" class="btn-ghost is-hidden" id="btn-toggle-picker">
+                Cambiar cartas elegidas
+              </button>
+              <button type="button" class="btn-ghost is-hidden" id="btn-clear-slots">
+                Limpiar mesa
+              </button>
+            </div>
+          </div>
+
+          <!-- Selector de los 22 arcanos (modo físico) -->
+          <div class="arcana-picker" id="arcana-picker">
+            <div class="picker-toolbar">
+              <div class="picker-status" id="picker-status">
+                Seleccionando carta para la posición 1
+              </div>
+              <div class="search-box">
+                <label class="sr-only" for="picker-search">Buscar arcano por nombre o número</label>
+                <input
+                  type="search"
+                  id="picker-search"
+                  class="text-input search-input"
+                  placeholder="Buscar por nombre o número (ej. Loco, 0, XIII, Fuerza, 8 o 11)..."
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="picker-grid" id="picker-grid">
+              <!-- Los 22 mini-arcanos -->
+            </div>
+          </div>
+        </section>
+
+        <!-- PASO 3: INTERPRETACIÓN -->
+        <section
+          class="panel interpretation-panel is-hidden"
+          id="interpretation-panel"
+          aria-live="polite"
+          aria-label="Resultado de la interpretación"
+        >
+          <!-- Renderizado dinámico de la lectura completa -->
+        </section>
+      </section>
+
+      <!-- VISTA 2: EXPLORAR LOS 22 ARCANOS -->
+      <section id="view-arcanos" class="view-section" aria-labelledby="arcanos-heading">
+        <div class="section-intro">
+          <h2 id="arcanos-heading" class="page-heading">Los 22 Arcanos Mayores</h2>
+          <p class="section-subtitle">
+            Explora el significado luminoso, el desafío y el eco poético de cada carta para familiarizarte con tu mazo de Santos Locos.
+          </p>
+        </div>
+
+        <div class="catalog-controls">
+          <div class="search-box catalog-search">
+            <label class="sr-only" for="catalog-search">Filtrar arcanos</label>
+            <input
+              type="search"
+              id="catalog-search"
+              class="text-input search-input"
+              placeholder="Buscar arcano por nombre, palabra clave o número..."
+              autocomplete="off"
+            />
+          </div>
+          <div class="filter-pills" id="catalog-filters" role="group" aria-label="Filtrar por tema">
+            <button type="button" class="filter-pill is-active" data-group="todos">Todos (22)</button>
+            <button type="button" class="filter-pill" data-group="inicio">Inicio e impulso</button>
+            <button type="button" class="filter-pill" data-group="introspeccion">Introspección</button>
+            <button type="button" class="filter-pill" data-group="vinculo">Vínculo y armonía</button>
+            <button type="button" class="filter-pill" data-group="orden">Orden y claridad</button>
+            <button type="button" class="filter-pill" data-group="cambio">Transformación</button>
+          </div>
+        </div>
+
+        <div class="catalog-grid" id="catalog-grid">
+          <!-- Tarjetas de los 22 arcanos -->
+        </div>
+      </section>
+
+      <!-- VISTA 3: BITÁCORA -->
+      <section id="view-bitacora" class="view-section" aria-labelledby="bitacora-heading">
+        <div class="section-intro bitacora-header">
+          <div>
+            <h2 id="bitacora-heading" class="page-heading">Bitácora de lecturas</h2>
+            <p class="section-subtitle">
+              Tus lecturas guardadas, reflexiones y versos anotados de tu mazo permanecen guardados solo en este navegador.
+            </p>
+          </div>
+          <div class="bitacora-tools">
+            <div class="filter-pills" id="bitacora-filters" role="group" aria-label="Filtrar bitácora">
+              <button type="button" class="filter-pill is-active" data-filter="todas">Todas</button>
+              <button type="button" class="filter-pill" data-filter="yo">Para mí</button>
+              <button type="button" class="filter-pill" data-filter="otro">Otras personas</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bitacora-list" id="bitacora-list">
+          <!-- Entradas guardadas -->
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL DE DETALLE DE ARCANO -->
+    <dialog id="arcano-dialog" class="arcano-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-inner" id="dialog-inner">
+        <!-- Contenido dinámico -->
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <p>
+        Santiarot · Herramienta reflexiva y lúdica para los 22 Arcanos Mayores. Las cartas no determinan un destino fijo: abren preguntas para mirar con más calma.
+      </p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="src/js/app.js"></script>
+  </body>
+</html>
